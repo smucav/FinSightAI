@@ -38,7 +38,8 @@ FinSightAI/
 │   ├── fetch_data.py       # Download and save historical data
 │   ├── task2_forecasting.py # ARIMA and LSTM model implementation
 │   ├── task3_forecasting.py # 6- and 12-month TSLA forecasts
-│   └── task4_optimization.py # Portfolio optimization with Efficient Frontier
+│   ├── task4_optimization.py # Portfolio optimization with Efficient Frontier
+│   └── task5_backtesting.py  # Backtest optimized portfolio
 │
 ├── notebooks/               # Jupyter Notebooks for analysis
 │   └── preprocess_eda.ipynb # Data cleaning, EDA, stationarity, risk metrics
@@ -48,14 +49,16 @@ FinSightAI/
 │   ├── forecast_metrics.csv # Forecasting model performance metrics
 │   ├── forecast_6m.csv      # 6-month TSLA forecast
 │   ├── forecast_12m.csv     # 12-month TSLA forecast
-│   └── portfolio_metrics.csv # Optimized portfolio weights and metrics
+│   ├── portfolio_metrics.csv # Optimized portfolio weights and metrics
+│   └── backtest_metrics.csv  # Backtest performance metrics
 │
 ├── figures/                 # Generated plots
 │   ├── adj_close_trends.png
 │   ├── volatility.png
 │   ├── forecast_comparison.png # ARIMA vs LSTM forecast plot
 │   ├── forecast_6_12_months.png # 6- and 12-month forecast plot
-│   └── efficient_frontier.png # Efficient Frontier with key portfolios
+│   ├── efficient_frontier.png # Efficient Frontier with key portfolios
+│   └── backtest_cumulative_returns.png # Backtest cumulative returns
 │
 ├── reports/                 # Reports & submissions
 │   └── interim_task1_report.pdf
@@ -96,6 +99,7 @@ python scripts/fetch_data.py
 python scripts/task2_forecasting.py
 python scripts/task3_forecasting.py
 python scripts/task4_optimization.py
+python scripts/task5_backtesting.py
 ```
 
 ---
@@ -128,19 +132,29 @@ python scripts/task4_optimization.py
   - Generated forecast plot (`figures/forecast_6_12_months.png`) and CSVs (`data/forecast_6m.csv`, `data/forecast_12m.csv`).
 * **Portfolio Optimization**:
   - Used `PyPortfolioOpt` to optimize a portfolio of TSLA, BND, and SPY based on Modern Portfolio Theory (MPT).
-  - TSLA expected return: ~0.15% annualized (likely incorrect due to high last price ~$318.80, pending confirmation).
-  - BND and SPY expected returns: 1.91% and 14.97% annualized, respectively, based on historical daily returns.
-  - Computed annualized covariance matrix from historical daily returns (noted high variances, under investigation).
+  - TSLA expected return: ~0.15% annualized (incorrect due to high last price ~$318.80; should be ~85.48% based on historical returns).
+  - BND and SPY expected returns: 1.91% and 14.97% annualized, respectively.
+  - Computed annualized covariance matrix (high variances noted, pending correction).
   - Generated the Efficient Frontier and identified two key portfolios:
-    - **Maximum Sharpe Ratio**: 100% SPY (0% TSLA, 0% BND), Return: 14.97%, Volatility: 240.61% (incorrect, expected ~15%), Sharpe: 0.0005.
+    - **Maximum Sharpe Ratio**: 100% SPY (0% TSLA, 0% BND), Return: 14.97%, Volatility: 240.61% (incorrect, expected ~15–20%), Sharpe: 0.0005.
     - **Minimum Volatility**: 5.22% TSLA, 85.30% BND, 9.48% SPY, Return: 3.05%, Volatility: 76.06% (incorrect, expected ~5–7%), Sharpe: -0.0001.
-  - **Recommendation**: Maximum Sharpe Ratio portfolio (pending correction of TSLA return and covariance matrix) to balance returns and risk.
+  - **Recommendation**: Maximum Sharpe Ratio portfolio (pending correction to include TSLA) for optimal risk-adjusted returns.
   - Outputs: Portfolio metrics (`data/portfolio_metrics.csv`), Efficient Frontier plot (`figures/efficient_frontier.png`).
+* **Backtesting**:
+  - Backtested the Maximum Sharpe Ratio portfolio (100% SPY) against a benchmark (60% SPY, 40% BND) over August 2024–July 2025.
+  - **Metrics**:
+    - **Max Sharpe**: Cumulative Return: 18.30%, Annualized Return: 17.69%, Volatility: 19.77%, Sharpe: 0.6923.
+    - **Benchmark**: Cumulative Return: 12.47%, Annualized Return: 12.06%, Volatility: 12.16%, Sharpe: 0.6632.
+  - **Analysis**:
+    - Max Sharpe outperforms in returns (17.69% vs. 12.06%) but has higher volatility (19.77% vs. 12.16%).
+    - Similar Sharpe Ratios (0.6923 vs. 0.6632) suggest comparable risk-adjusted performance.
+    - Note: Max Sharpe’s 100% SPY allocation is suboptimal due to incorrect TSLA return in Task 4. A corrected portfolio (e.g., ~40% TSLA, 20% BND, 40% SPY) should improve diversification and returns.
+  - Outputs: Backtest metrics (`data/backtest_metrics.csv`), cumulative returns plot (`figures/backtest_cumulative_returns.png`).
 * **ARIMA / SARIMA** – Classical time series models for forecasting.
 * **LSTM** – Deep learning for sequential data prediction.
 * **Volatility Analysis** – Rolling statistics & Value at Risk (VaR).
 * **Efficient Frontier** – Portfolio optimization with `PyPortfolioOpt`.
-* **Backtesting** – Strategy validation against benchmarks (upcoming).
+* **Backtesting** – Strategy validation against benchmarks.
 
 ---
 
