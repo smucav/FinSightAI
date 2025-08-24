@@ -37,7 +37,8 @@ FinSightAI/
 ├── scripts/                 # Python scripts for automation
 │   ├── fetch_data.py       # Download and save historical data
 │   ├── task2_forecasting.py # ARIMA and LSTM model implementation
-│   └── task3_forecasting.py # 6- and 12-month TSLA forecasts
+│   ├── task3_forecasting.py # 6- and 12-month TSLA forecasts
+│   └── task4_optimization.py # Portfolio optimization with Efficient Frontier
 │
 ├── notebooks/               # Jupyter Notebooks for analysis
 │   └── preprocess_eda.ipynb # Data cleaning, EDA, stationarity, risk metrics
@@ -46,13 +47,15 @@ FinSightAI/
 │   ├── financial_data_clean.csv
 │   ├── forecast_metrics.csv # Forecasting model performance metrics
 │   ├── forecast_6m.csv      # 6-month TSLA forecast
-│   └── forecast_12m.csv     # 12-month TSLA forecast
+│   ├── forecast_12m.csv     # 12-month TSLA forecast
+│   └── portfolio_metrics.csv # Optimized portfolio weights and metrics
 │
 ├── figures/                 # Generated plots
 │   ├── adj_close_trends.png
 │   ├── volatility.png
 │   ├── forecast_comparison.png # ARIMA vs LSTM forecast plot
-│   └── forecast_6_12_months.png # 6- and 12-month forecast plot
+│   ├── forecast_6_12_months.png # 6- and 12-month forecast plot
+│   └── efficient_frontier.png # Efficient Frontier with key portfolios
 │
 ├── reports/                 # Reports & submissions
 │   └── interim_task1_report.pdf
@@ -86,17 +89,13 @@ venv\Scripts\activate      # Windows
 pip install -r requirements.txt
 ```
 
-4️⃣ **Run data fetching script**
+4️⃣ **Run scripts**
 
 ```bash
 python scripts/fetch_data.py
-```
-
-5️⃣ **Run forecasting scripts**
-
-```bash
 python scripts/task2_forecasting.py
 python scripts/task3_forecasting.py
+python scripts/task4_optimization.py
 ```
 
 ---
@@ -127,10 +126,20 @@ python scripts/task3_forecasting.py
     - Opportunities: Potential upside to $422–$464 if bullish catalysts occur.
     - Risks: Wide CIs suggest significant downside risk (e.g., $174 by July 2026).
   - Generated forecast plot (`figures/forecast_6_12_months.png`) and CSVs (`data/forecast_6m.csv`, `data/forecast_12m.csv`).
+* **Portfolio Optimization**:
+  - Used `PyPortfolioOpt` to optimize a portfolio of TSLA, BND, and SPY based on Modern Portfolio Theory (MPT).
+  - TSLA expected return: ~0.15% annualized (likely incorrect due to high last price ~$318.80, pending confirmation).
+  - BND and SPY expected returns: 1.91% and 14.97% annualized, respectively, based on historical daily returns.
+  - Computed annualized covariance matrix from historical daily returns (noted high variances, under investigation).
+  - Generated the Efficient Frontier and identified two key portfolios:
+    - **Maximum Sharpe Ratio**: 100% SPY (0% TSLA, 0% BND), Return: 14.97%, Volatility: 240.61% (incorrect, expected ~15%), Sharpe: 0.0005.
+    - **Minimum Volatility**: 5.22% TSLA, 85.30% BND, 9.48% SPY, Return: 3.05%, Volatility: 76.06% (incorrect, expected ~5–7%), Sharpe: -0.0001.
+  - **Recommendation**: Maximum Sharpe Ratio portfolio (pending correction of TSLA return and covariance matrix) to balance returns and risk.
+  - Outputs: Portfolio metrics (`data/portfolio_metrics.csv`), Efficient Frontier plot (`figures/efficient_frontier.png`).
 * **ARIMA / SARIMA** – Classical time series models for forecasting.
 * **LSTM** – Deep learning for sequential data prediction.
 * **Volatility Analysis** – Rolling statistics & Value at Risk (VaR).
-* **Efficient Frontier** – Portfolio optimization with `PyPortfolioOpt` (upcoming).
+* **Efficient Frontier** – Portfolio optimization with `PyPortfolioOpt`.
 * **Backtesting** – Strategy validation against benchmarks (upcoming).
 
 ---
